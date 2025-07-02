@@ -1,0 +1,27 @@
+/* Estilos personalizados */
+  .text-gradient {
+    background: linear-gradient(45deg, #4e54c8, #8f94fb);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  .active-link {
+    background-color: rgba(78, 84, 200, 0.1);
+    color: #4e54c8 !important;
+    font-weight: 500;
+  }
+  
+  .nav-link {
+    color: #555;
+    transition: all 0.3s ease;
+  }
+  
+  .nav-link:hover {
+    color: #4e54c8;
+    transform: translateY(-2px);
+  }
+  
+  .navbar {
+    padding: 0.5rem 0;
+  }

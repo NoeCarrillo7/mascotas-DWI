@@ -1,0 +1,231 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h3 class="mb-0">
+            <i class="fas fa-edit me-2"></i>Editar Mascota
+          </h3>
+        </div>
+
+        <div class="card-body">
+          <form [formGroup]="EditarMascotaForm" (ngSubmit)="onSubmit()">
+            <!-- Sección Información Básica -->
+            <h5 class="mb-4 text-primary">
+              <i class="fas fa-info-circle me-2"></i>Información Básica
+            </h5>
+
+            <div class="row g-3 mb-4">
+              <!-- Nombre -->
+              <div class="col-md-6">
+                <label for="nombre" class="form-label">Nombre de la mascota</label>
+                <input type="text" class="form-control" id="nombre" formControlName="nombre"
+                  [ngClass]="{ 'is-invalid': enviado && myForm['nombre'].errors }">
+                @if (enviado && myForm['nombre'].errors) {
+                @if (myForm['nombre'].errors['required']) {
+                <div>El nombre es requerido</div>
+                }
+                }
+
+              </div>
+
+              <!-- Tipo -->
+              <div class="col-md-6">
+                <label for="tipo" class="form-label">Tipo de mascota</label>
+                <select class="form-select" id="tipo" formControlName="tipo" (change)="actualizarTipo($event)"
+                  [ngClass]="{ 'is-invalid': enviado && myForm['tipo'].errors }">
+                  <option value="" disabled>Seleccione un tipo</option>
+                  @for (tipo of mascotaTipos; track $index) {
+                  <option [value]="tipo" [selected]="tipo === EditarMascotaForm.get('tipo')?.value">
+                    {{tipo}}
+                  </option>
+                  }
+                </select>
+                @if (mostrarOtroTipo) {
+                <div class="mb-3">
+                  <label for="otroTipo" class="form-label">Especifique el tipo de mascota</label>
+                  <input type="text" id="otroTipo" class="form-control" placeholder="Ingrese tipo de mascota"
+                    (input)="EditarMascotaForm.patchValue({ tipo: $any($event.target).value })"
+                    [value]="EditarMascotaForm.get('tipo')?.value">
+                </div>
+                }
+                @if (enviado && myForm['tipo'].errors) {
+                <div class="invalid-feedback">
+                  @if (myForm['tipo'].errors['required']) {
+                  <div>El tipo es requerido</div>
+                  }
+                </div>
+                }
+
+              </div>
+
+              <!-- Raza -->
+              <div class="col-md-6">
+                <label for="raza" class="form-label">Raza</label>
+                <input type="text" class="form-control" id="raza" formControlName="raza"
+                  [ngClass]="{ 'is-invalid': enviado && myForm['raza'].errors }">
+                @if (enviado && myForm['raza'].errors) {
+                <div class="invalid-feedback">
+                  @if (myForm['raza'].errors['required']) {
+                  <div>La raza es requerida</div>
+                  }
+                </div>
+                }
+              </div>
+
+              <!-- Sexo -->
+              <div class="col-md-6">
+                <label for="sexo" class="form-label">Sexo</label>
+                <select class="form-select" id="sexo" formControlName="sexo"
+                  [ngClass]="{ 'is-invalid': enviado && myForm['sexo'].errors }">
+                  <option value="" disabled>Seleccione el sexo</option>
+                  <option value="Macho" [selected]="EditarMascotaForm.get('sexo')?.value === 'Macho'">Macho</option>
+                  <option value="Hembra" [selected]="EditarMascotaForm.get('sexo')?.value === 'Hembra'">Hembra</option>
+                </select>
+                @if (enviado && myForm['sexo'].errors) {
+                <div class="invalid-feedback">
+                  @if (myForm['sexo'].errors['required']) {
+                  <div>El sexo es requerido</div>
+                  }
+                </div>
+                }
+              </div>
+            </div>
+
+            <!-- Sección Datos Físicos -->
+            <h5 class="mb-4 text-primary">
+              <i class="fas fa-weight me-2"></i>Datos Físicos
+            </h5>
+
+            <div class="row g-3 mb-4">
+              <!-- Edad -->
+              <div class="col-md-6">
+                <label for="edad" class="form-label">Edad (años)</label>
+                <input type="number" class="form-control" id="edad" formControlName="edad"
+                  [ngClass]="{ 'is-invalid': enviado && myForm['edad'].errors }">
+                @if (enviado && myForm['edad'].errors) {
+                <div class="invalid-feedback">
+                  @if (myForm['edad'].errors['required']) {
+                  <div>La edad es requerida</div>
+                  }
+                  @if (myForm['edad'].errors['min']) {
+                  <div>La edad mínima es 0</div>
+                  }
+                  @if (myForm['edad'].errors['max']) {
+                  <div>La edad máxima es 30</div>
+                  }
+                </div>
+                }
+              </div>
+
+              <!-- Peso -->
+              <div class="col-md-6">
+                <label for="peso" class="form-label">Peso (kg)</label>
+                <input type="number" step="0.1" class="form-control" id="peso" formControlName="peso"
+                  [ngClass]="{ 'is-invalid': enviado && myForm['peso'].errors }">
+                @if (enviado && myForm['peso'].errors) {
+                <div class="invalid-feedback">
+                  @if (myForm['peso'].errors['required']) {
+                  <div>El peso es requerido</div>
+                  }
+                  @if (myForm['peso'].errors['min']) {
+                  <div>El peso mínimo es 0</div>
+                  }
+                </div>
+                }
+              </div>
+            </div>
+
+            <!-- Sección Dueño -->
+            <h5 class="mb-4 text-primary">
+              <i class="fas fa-user me-2"></i>Información del Dueño
+            </h5>
+
+            <div class="row g-3 mb-4">
+              <!-- Dueño -->
+              <div class="col-md-6">
+                <label for="duenio" class="form-label">Nombre del dueño</label>
+                <input type="text" class="form-control" id="duenio" formControlName="duenio"
+                  [ngClass]="{ 'is-invalid': enviado && myForm['duenio'].errors }">
+                @if (enviado && myForm['duenio'].errors) {
+                <div class="invalid-feedback">
+                  @if (myForm['duenio'].errors['required']) {
+                  <div>El nombre del dueño es requerido</div>
+                  }
+                  @if (myForm['duenio'].errors['minlength']) {
+                  <div>Mínimo 3 caracteres</div>
+                  }
+                </div>
+                }
+              </div>
+
+              <!-- Teléfono -->
+              <div class="col-md-6">
+                <label for="telefono" class="form-label">Teléfono de contacto</label>
+                <input type="tel" class="form-control" id="telefono" formControlName="telefono"
+                  [ngClass]="{ 'is-invalid': enviado && myForm['telefono'].errors }">
+                @if (enviado && myForm['telefono'].errors) {
+                <div class="invalid-feedback">
+                  @if (myForm['telefono'].errors['required']) {
+                  <div>El teléfono es requerido</div>
+                  }
+                  @if (myForm['telefono'].errors['pattern']) {
+                  <div>Solo números permitidos</div>
+                  }
+                </div>
+                }
+              </div>
+
+
+              <!-- Sección Vacunas -->
+              <h5 class="mb-4 text-primary">
+                <i class="fas fa-syringe me-2"></i>Vacunas (Opcional)
+              </h5>
+
+              <div class="mb-4">
+                <div class="input-group">
+                  <input type="text" class="form-control" id="vacunaInput" placeholder="Nombre de la vacuna"
+                    #vacunaInput>
+                  <button class="btn btn-outline-secondary" type="button" (click)="actualizarVacuna(vacunaInput)">
+                    <i class="fas fa-plus"></i> Agregar
+                  </button>
+                </div>
+
+                @if (EditarMascotaForm.get('vacunas')?.value?.length > 0) {
+                <div class="mt-3">
+                  <div class="d-flex flex-wrap gap-2">
+                    @for (vacuna of EditarMascotaForm.get('vacunas')?.value; track $index) {
+                    <span class="badge bg-primary">
+                      {{vacuna}}
+                      <button type="button" class="btn-close btn-close-white ms-2" aria-label="Close"
+                        (click)="eliminarVacuna($index)"></button>
+                    </span>
+                    }
+
+                  </div>
+                </div>
+                }
+
+              </div>
+
+
+
+
+
+            </div>
+
+            <!-- Botones -->
+            <div class="d-flex justify-content-between mt-4">
+              <button type="button" class="btn btn-outline-secondary" routerLink="/lista-mascota">
+                <i class="fas fa-arrow-left me-2"></i>Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i>Guardar Cambios
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

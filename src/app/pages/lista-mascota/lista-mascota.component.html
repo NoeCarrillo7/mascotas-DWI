@@ -1,0 +1,108 @@
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary">
+      <i class="fas fa-paw me-2"></i>Lista de Mascotas
+    </h2>
+
+  </div>
+
+  <!-- Filtros -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <input type="text" class="form-control" placeholder="Buscar por nombre..." [(ngModel)]="filtroNombre"
+        (input)="aplicarFiltros()">
+    </div>
+  </div>
+
+  <!-- Cards de mascotas -->
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    @for (mascota of mascotasFiltradas; let i = $index; track $index) {
+      <div >
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-header"
+          [ngClass]="{'bg-primary': mascota.sexo === 'Macho', 'bg-pink': mascota.sexo === 'Hembra'}">
+          <h5 class="card-title mb-0 text-white">
+            <i [class]="getIconoTipo(mascota.tipo)"></i> {{mascota.nombre}}
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="d-flex mb-3">
+            <span class="badge bg-secondary me-2">{{mascota.tipo || 'Sin tipo'}}</span>
+            <span class="badge"
+              [ngClass]="{'bg-info': mascota.sexo === 'Macho', 'bg-purple': mascota.sexo === 'Hembra'}">
+              {{mascota.sexo || 'Sin especificar'}}
+            </span>
+          </div>
+
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Raza:</span>
+              <span class="fw-bold">{{mascota.raza || 'No especificada'}}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Edad:</span>
+              <span class="fw-bold">{{mascota.edad}} año{{mascota.edad !== 1 ? 's' : ''}}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Peso:</span>
+              <span class="fw-bold">{{mascota.peso}} kg</span>
+            </li>
+          </ul>
+
+          <div class="mt-3">
+            <h6 class="text-muted">Dueño:</h6>
+            <p class="mb-1">{{mascota.duenio || 'No especificado'}}</p>
+            @if (mascota.telefono) {
+              <p><i class="fas fa-phone me-2"></i>{{mascota.telefono}}</p>
+            }
+          </div>
+
+          @if (mascota.vacunas && mascota.vacunas.length > 0) {
+            <div class="mt-3">
+              <h6 class="text-muted">Vacunas:</h6>
+              <div class="d-flex flex-wrap gap-2">
+                @for (vacuna of mascota.vacunas; track $index) {
+                  <span class="badge bg-success">
+                    <i class="fas fa-syringe me-1"></i>{{vacuna}}
+                  </span>
+                }
+              </div>
+            </div>
+          }
+          
+        </div>
+        <div class="card-footer bg-transparent border-0 d-flex justify-content-end">
+          <button class="btn btn-sm btn-outline-primary me-2" [routerLink]="['/editar-mascota', mascota._id]">
+            <i class="fas fa-edit"></i> Editar
+          </button>
+          <button class="btn btn-sm btn-outline-danger" (click)="eliminarMascota2(mascota, i)">
+            <i class="fas fa-trash-alt"></i> Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+    }
+    
+  </div>
+
+  <!-- Mensaje cuando no hay mascotas -->
+  @if (listaMascotas.length === 0) {
+    <div class="text-center py-5">
+      <i class="fas fa-paw fa-4x text-muted mb-3"></i>
+      <h4 class="text-muted">No hay mascotas registradas</h4>
+      <p class="text-muted">Agrega tu primera mascota haciendo clic en el botón "Nueva Mascota"</p>
+    </div>
+  }
+  
+
+  <!-- Cargando datos -->
+  @if (cargando) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="mt-2">Cargando mascotas...</p>
+    </div>
+  }
+  
+</div>
